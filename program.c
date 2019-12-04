@@ -34,21 +34,16 @@ int main(void) {
   computerInit(&cBoard,&cShots,&cShips);
   playerInit(&pBoard,&pShots,&pShips);
   
-  while(!win(pShips,cShips)){ //while no one has won, keep playing the game
+  while(!win(pShips,cShips)){ //While no one has won, keep playing the game
     
-    currPlayer = !currPlayer;
+    if(!currPlayer) {
+     mvprintw(30, 0, " ");
+    }
+    
+    currPlayer = !currPlayer; //Switch player
   }
   
-  /* Code for if win fuction is made recurrsive
-  switch(win(pShips,cShips)) {
-    case 1://player wins
-      
-    case 2://computer wins
-      
-    default://error
-      
-  }
-  */
+  
   
 }
 
@@ -79,7 +74,6 @@ void drawScreen(char *pBoard, char *pShots){
   
 }
 //Used to decide if either the player or the computer have won
-//Also deciding if this function will be a recurrsive run to track the whole game, depends on how much memory it uses
 int win(ship *pShips, ship *cShips){
   int pwin, cwin;
   pwin = pShips[0].status + pShips[1].status + pShips[2].status;
