@@ -5,11 +5,13 @@
 
 #define BOARDSIZE 5
 #define BOAT 'O'
-#define HIT 'X'
-#define sea '@'
+#define HIT '$'
+#define MISS 'X'
+#define CURSOR '+'
+#define SEA '@'
 
 typedef struct ship_s {
-  char *spaces;
+  char **spaces;
   int size;
   int status;
 } ship;
@@ -18,7 +20,9 @@ typedef struct ship_s {
 void computerInit(char *board, char *shots, ship *ships);
 void playerInit(char *board, char *shots, ship *ships);
 void makeShip(ship *nShip, int size);
+void setShip(ship *nShip);
 int turn(int x, int y, char *eBoard, char *shots);
+void hit(int x, int y, ship *ships);
 void drawScreen(char *pBoard, char *pShots);
 int win(ship *pShips, ship *cShips);
 
@@ -52,45 +56,57 @@ int main(void) {
 //Implementations
 //Inintializes the computer's boards, including placement of it's ships
 void computerInit(char *board, char *shots, ship *ships){
-  for(int i = 0; i < 3; ++i) {
-    makeShip(&ships[i], i);
+  for(int i = 2; i >= 0; ++i) {
+    makeShip(&ships[i], i + 1);
+    setShip(&ships[i]);
   }
   
 }
 //Initializes the player's boards, including placement of their ships
 void playerInit(char *board, char *shots, ship *ships){
-  for(int i = 0; i < 3; ++i) {
-    makeShip(&ships[i], i);
+  for(int i = 2; i >= 0; ++i) {
+    makeShip(&ships[i], i + 1);
+    setShip(&ships[i]);
   }
   
 }
 //Makes new ship
 void makeShip(ship *nShip, int size){
   nShip = (ship*)malloc(sizeof(ship));
-  *(nShip).spaces = (char*)malloc(size * sizeof(char));
+  *(nShip).spaces = (char**)malloc(size * sizeof(char*));
   *(nShip).size = size;
   *(nShip).status = 1;
+}
+//Sets the ship into a location and assigns the board locations to the spaces double pointer
+void setShip(ship *nShip, int x, int up, int down, int left, int right){
+  while(!x) {
+    
+  }
 }
 //Used to track the actions each turn, used for both player and computer
 int turn(int x, int y, ship *eShips, char *shots){
   if(eBoard[x][y] == BOAT) {
-    
+    eBoard[x][y] = HIT;
+    shots[x][y] = HIT;
+    return 1;
   } else {
-    
+    shots[x][y] = MISS;
+    return 0;
   }
 }
 //Draws the screen for the player
 void drawScreen(char *pBoard, char *pShots){
   for(int x = 0; x < BOARDSIZE; ++x) {
     for(int y = 0; y < BOARDSIZE; ++y){
-      mvaddch(y,x,pBoard[x][y]);
+      mvaddch(y,x,pShots[x][y]);
     }
   }
   for(int x = 0; x < BOARDSIZE; ++x) {
     for(int y = 0; y < BOARDSIZE; ++y){
-      mvaddch(y + BOARDSIZE + 1,x,pShots[x][y]);
+      mvaddch(y + BOARDSIZE + 1,x,pBoard[x][y]);
     }
   }
+  refresh();
 }
 //Used to decide if either the player or the computer have won
 int win(ship *pShips, ship *cShips){
