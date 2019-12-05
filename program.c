@@ -18,7 +18,7 @@ typedef struct ship_s {
 void computerInit(char *board, char *shots, ship *ships);
 void playerInit(char *board, char *shots, ship *ships);
 void makeShip(ship *nShip, int size);
-void turn(int x, int y, char *board);
+int turn(int x, int y, char *eBoard, char *shots);
 void drawScreen(char *pBoard, char *pShots);
 int win(ship *pShips, ship *cShips);
 
@@ -36,8 +36,10 @@ int main(void) {
   
   while(!win(pShips,cShips)){ //While no one has won, keep playing the game
     
-    if(!currPlayer) {
-     mvprintw(30, 0, " ");
+    if(!currPlayer) { //player's turn
+      mvprintw(30, 0, " ");
+    } else { //computer's turn
+      
     }
     
     currPlayer = !currPlayer; //Switch player
@@ -51,11 +53,15 @@ int main(void) {
 //Inintializes the computer's boards, including placement of it's ships
 void computerInit(char *board, char *shots, ship *ships){
   for(int i = 0; i < 3; ++i) {
-    makeShip(&ships[i], i
+    makeShip(&ships[i], i);
   }
+  
 }
 //Initializes the player's boards, including placement of their ships
 void playerInit(char *board, char *shots, ship *ships){
+  for(int i = 0; i < 3; ++i) {
+    makeShip(&ships[i], i);
+  }
   
 }
 //Makes new ship
@@ -66,12 +72,25 @@ void makeShip(ship *nShip, int size){
   *(nShip).status = 1;
 }
 //Used to track the actions each turn, used for both player and computer
-void turn(int x, int y, char *board){
-  
+int turn(int x, int y, ship *eShips, char *shots){
+  if(eBoard[x][y] == BOAT) {
+    
+  } else {
+    
+  }
 }
 //Draws the screen for the player
 void drawScreen(char *pBoard, char *pShots){
-  
+  for(int x = 0; x < BOARDSIZE; ++x) {
+    for(int y = 0; y < BOARDSIZE; ++y){
+      mvaddch(y,x,pBoard[x][y]);
+    }
+  }
+  for(int x = 0; x < BOARDSIZE; ++x) {
+    for(int y = 0; y < BOARDSIZE; ++y){
+      mvaddch(y + BOARDSIZE + 1,x,pShots[x][y]);
+    }
+  }
 }
 //Used to decide if either the player or the computer have won
 int win(ship *pShips, ship *cShips){
