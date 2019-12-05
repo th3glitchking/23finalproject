@@ -3,12 +3,15 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define BOARDSIZE 5
-#define BOAT 'O'
+// Compile with gcc program.c -o program -lncurses
+// Run with ./ds4rd.exe -d 054c:05c4 -D DS4_BT -t -b -bt -bd | ./program
+
+#define BOARDSIZE 4
+#define BOAT '@'
 #define HIT '$'
 #define MISS 'X'
 #define CURSOR '+'
-#define SEA '@'
+#define SEA ':'
 
 typedef struct ship_s {
   char **spaces;
@@ -78,8 +81,10 @@ void makeShip(ship *nShip, int size){
   *(nShip).status = 1;
 }
 //Sets the ship into a location and assigns the board locations to the spaces double pointer
-void setShip(ship *nShip, int x, int up, int down, int left, int right){
+void setShip(ship *nShip){
+  int time, t, c, x, s, l, r, op, sh, r2, l2, r1, l1, up, left, down, right, row = 0, col = 0;
   while(!x) {
+    scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &time, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
     
   }
 }
