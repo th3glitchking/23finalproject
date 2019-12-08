@@ -14,7 +14,7 @@
 #define SEA ':'
 
 typedef struct ship_s {
-  char **spaces;
+  char **spaces; //coordinates
   int size;
   int status;
 } ship;
@@ -24,7 +24,7 @@ void computerInit(char *board, char *shots, ship *ships);
 void playerInit(char *board, char *shots, ship *ships);
 void makeShip(ship *nShip, int size);
 void setShip(ship *nShip);
-int turn(int x, int y, char *eBoard, char *shots);
+int fire(int x, int y, char *eBoard, char *shots);
 void hit(int x, int y, ship *ships);
 void drawScreen(char *pBoard, char *pShots);
 int win(ship *pShips, ship *cShips);
@@ -38,13 +38,13 @@ int main(void) {
   //Initialize game
   initscr();
   refresh();
-  computerInit(&cBoard,&cShots,&cShips);
-  playerInit(&pBoard,&pShots,&pShips);
+  computerInit(cBoard,cShots,cShips);
+  playerInit(pBoard,pShots,pShips);
   
   while(!win(pShips,cShips)){ //While no one has won, keep playing the game
     
     if(!currPlayer) { //player's turn
-      mvprintw(30, 0, " ");
+      drawScreen(pBoard, pShots);
     } else { //computer's turn
       
     }
@@ -61,7 +61,7 @@ int main(void) {
 void computerInit(char *board, char *shots, ship *ships){
   for(int i = 2; i >= 0; ++i) {
     makeShip(&ships[i], i + 1);
-    setShip(&ships[i]);
+    
   }
   
 }
@@ -82,14 +82,33 @@ void makeShip(ship *nShip, int size){
 }
 //Sets the ship into a location and assigns the board locations to the spaces double pointer
 void setShip(ship *nShip){
-  int time, t, c, x, s, l, r, op, sh, r2, l2, r1, l1, up, left, down, right, row = 0, col = 0;
+  int time, t, c, x, s, l, r, op, sh, r2, l2, r1, l1, up, left, down, right, row = 0, col = 0, dir = 0;
   while(!x) {
+    for(int i = 0; i < *nShip.size; ++i) {
+      if(dir) {
+        mvaddch(row + BOARDSIZE + i, col, SEA);
+      } else {
+        mvaddch(row + BOARDSIZE, col + i, SEA);
+      }
+    }
     scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &time, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
-    
+    if(up && row > 0) row--;
+    if(down && row < BOARDSIZE - 1) row++;
+    if(left && col > 0) col--;
+    if(right && col < BOARDSIZE - 1) col++;
+    if(s) dir = !dir;
+    for(int i = 0; i < *nShip.size; ++i) {
+      if(dir) {
+        mvaddch(row + i, col, BOAT);
+      } else {
+        mvaddch(row, col + i, BOAT);
+      }
+    }
+    refresh();
   }
 }
 //Used to track the actions each turn, used for both player and computer
-int turn(int x, int y, ship *eShips, char *shots){
+int fire(int x, int y, ship *eShips, char *shots){
   if(eBoard[x][y] == BOAT) {
     eBoard[x][y] = HIT;
     shots[x][y] = HIT;
