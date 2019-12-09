@@ -58,9 +58,9 @@ int main(void) {
   computerInit(cBoard,cShots,cShips);
   playerInit(pBoard,pShots,pShips);
   
-  mvprintw(0, BOARDSIZE + 2, "D-Pad -> Move the cursor");
-  mvprintw(1, BOARDSIZE + 2, "X Button -> Select space");
-  mvprintw(2, BOARDSIZE + 2, "Square Button -> Rotate boat");
+  mvprintw(0, BOARDSIZE + 2, "D-Pad -> Move the cursor\tO -> Boat");
+  mvprintw(1, BOARDSIZE + 2, "X Button -> Select space\tX -> Hit");
+  mvprintw(2, BOARDSIZE + 2, "Square Button -> Rotate boat\t@ -> Miss");
   
   //Ensure no input before start
   while(up || down || left || right || x) {
@@ -77,6 +77,7 @@ int main(void) {
 	  while(up || down || left || right || x) {
 		scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &ti, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
 	  }
+	  //Until player presses the x button, use the d-pad input to move the cursor 
       while(!x) {
 		while(up || down || left || right || x) {
 		  scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &ti, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
@@ -96,6 +97,7 @@ int main(void) {
 	  mvprintw(4, BOARDSIZE + 2, "Computer's turn!");
 	  refresh();
       int row, col;
+	  //Find space that hasn't been fired in (to increase difficulty)
       do {
         row = rand() % BOARDSIZE;
         col = rand() % BOARDSIZE;
@@ -103,9 +105,10 @@ int main(void) {
       mvprintw(5, BOARDSIZE + 2, fire(row,col,pBoard,cShots) ? "HIT!" : "MISS!");
 	  refresh();
     }
-    updateShips(pShips,cShips);
+    updateShips(pShips,cShips); //Update statuses
     currPlayer = !currPlayer; //Switch player
 	scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &ti, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
+	//Short pause to let player see whether computer hit or miss
 	int end = ti + 400;
 	while(ti < end) {
 	  scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &ti, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
@@ -168,6 +171,7 @@ void computerInit(char (*board)[BOARDSIZE], char (*shots)[BOARDSIZE], ship *ship
     }
   }
 }
+
 //Initializes the player's boards, including placement of their ships  (works)
 void playerInit(char (*board)[BOARDSIZE], char (*shots)[BOARDSIZE], ship *ships){
   for(int i = 0; i < 3; ++i) {
@@ -176,6 +180,7 @@ void playerInit(char (*board)[BOARDSIZE], char (*shots)[BOARDSIZE], ship *ships)
   }
   
 }
+
 //Makes new ship  (works)
 ship makeShip(int length){
   ship *newShip = (ship *)malloc(sizeof(ship));
@@ -186,6 +191,7 @@ ship makeShip(int length){
   
   
 }
+
 //Sets the ship into a location and assigns the board locations to the spaces double pointer  (works)
 void setShip(ship nShip, char (*board)[BOARDSIZE], char (*shots)[BOARDSIZE]){
   int ti, t, c, x = 1, s, l, r, op, sh, r2, l2, r1, l1, up, left, down, right, row = 0, col = 0, dir = 0;
@@ -232,6 +238,7 @@ void setShip(ship nShip, char (*board)[BOARDSIZE], char (*shots)[BOARDSIZE]){
       
   }
 }
+
 //updates the status of each ship, 1 if still afloat, 0 if ship sunken (works)
 void updateShips(ship *pShips, ship *cShips){
   for(int i = 0; i < 3; ++i) {
@@ -254,6 +261,7 @@ void updateShips(ship *pShips, ship *cShips){
 	}
   }
 }
+
 //Used to track the actions each turn, used for both player and computer  (works)
 int fire(int row, int col, char (*eBoard)[BOARDSIZE], char (*shots)[BOARDSIZE]){
   if(eBoard[row][col] == BOAT) {
