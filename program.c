@@ -35,6 +35,7 @@ int main(void) {
         cBoard[BOARDSIZE][BOARDSIZE], cShots[BOARDSIZE][BOARDSIZE]; //computer's Ship and Shot boards
   ship pShips[3], cShips[3]; //player's and computer's ships
   int currPlayer = 0; //boolean statement for tracking who's turn it is
+  int time, t, c, x, s, l, r, op, sh, r2, l2, r1, l1, up, left, down, right;
   
   //Inintializes the board to be all sea to prepare for ship placement
   for(int i = 0; i < BOARDSIZE; ++i) {
@@ -52,6 +53,9 @@ int main(void) {
   refresh();
   computerInit(cBoard,cShots,cShips);
   playerInit(pBoard,pShots,pShips);
+  mvprintw(0, BOARDSIZE + 2, "D-Pad -> Move the cursor");
+  mvprintw(1, BOARDSIZE + 2, "X Button -> Select space");
+  mvprintw(2, BOARDSIZE + 2, "Square Button -> Rotate boat");
   
   while(!win(pShips,cShips)){ //While no one has won, keep playing the game
     
@@ -59,12 +63,14 @@ int main(void) {
       drawScreen(pBoard, pShots);
       int row = 0, col = 0;
       while(!x) {
+        scanf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d", &time, &t, &c, &x, &s, &l, &r, &op, &sh, &r2, &l2, &r1, &l1, &up, &left, &down, &right);
         mvaddch(row,col,pShots[row][col]);
         if(up && row > 0) row--;
         if(down && row < BOARDSIZE - 1) row++;
         if(left && col > 0) col--;
         if(right && col < BOARDSIZE - 1) col++;
         mvaddch(row,col,CURSOR);
+        refresh();
       }
       mvprintw(15, BOARDSIZE + 2, fire(row,col,cBoard,pShots) ? "HIT!" : "MISS!");
     } else { //computer's turn
@@ -78,9 +84,19 @@ int main(void) {
     updateShips(pShips,cShips);
     currPlayer = !currPlayer; //Switch player
   }
+  endwin();
+  switch(win(pShips,cShips)) {
+    case 1: //Player wins
+      printf("You win!");
+      break;
+    case 2: //Computer wins
+      printf("You lose. Try again next time.");
+      break;
+    default: //error?
+      printf("An error occured, please try again.");
+  }
   
-  
-  
+  return 0;
 }
 
 //Implementations
